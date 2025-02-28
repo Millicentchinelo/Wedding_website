@@ -1,0 +1,66 @@
+name: Backend Parse Server Deploy
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment for Backend Deploy Parse server'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - stage
+          - prod
+jobs:
+  parse_server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set Environment
+        run: |
+          if [ "${{ github.event.inputs.environment }}" == "prod" ]; then
+            echo "choosing prod"
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.PROD_AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+            echo "${{ secrets.PROD_AWS_EC2_SSH_KEY }}" >> key.pem
+            echo "AWS_REGION=${{ vars.PROD_AWS_REGION }}" >> $GITHUB_ENV
+            echo "AWS_ECR_REPO_PARSE_SERVER=${{ vars.PROD_AWS_ECR_REPO_PARSE_SERVER }}" >> $GITHUB_ENV
+            echo "AWS_EC2_HOST=${{ vars.PROD_AWS_EC2_HOST }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_APPLICATION_ID=${{ secrets.PROD_PARSE_SERVER_APPLICATION_ID }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_MASTER_KEY=${{ secrets.PROD_PARSE_SERVER_MASTER_KEY }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_JAVASCRIPT_KEY=${{ secrets.PROD_PARSE_SERVER_JAVASCRIPT_KEY }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_DATABASE_URI=${{ secrets.PROD_PARSE_SERVER_DATABASE_URI }}" >> $GITHUB_ENV
+            echo "S3_BUCKET_PARSE_SERVER=${{ vars.PROD_S3_BUCKET_PARSE_SERVER }}" >> $GITHUB_ENV
+            echo "API_BACKEND_URL=${{ vars.PROD_API_BACKEND_URL }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_ALLOW_ORIGIN=${{ secrets.PROD_PARSE_SERVER_ALLOW_ORIGIN }}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.environment }}" == "stage" ]; then
+            echo "choosing stage"
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.STAGE_AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.STAGE_AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+            echo "${{ secrets.STAGE_AWS_EC2_SSH_KEY }}" >> key.pem
+            echo "AWS_REGION=${{ vars.STAGE_AWS_REGION }}" >> $GITHUB_ENV
+            echo "AWS_ECR_REPO_PARSE_SERVER=${{ vars.STAGE_AWS_ECR_REPO_PARSE_SERVER }}" >> $GITHUB_ENV
+            echo "AWS_EC2_HOST=${{ vars.STAGE_AWS_EC2_HOST }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_APPLICATION_ID=${{ secrets.STAGE_PARSE_SERVER_APPLICATION_ID }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_MASTER_KEY=${{ secrets.STAGE_PARSE_SERVER_MASTER_KEY }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_JAVASCRIPT_KEY=${{ secrets.STAGE_PARSE_SERVER_JAVASCRIPT_KEY }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_DATABASE_URI=${{ secrets.STAGE_PARSE_SERVER_DATABASE_URI }}" >> $GITHUB_ENV
+            echo "S3_BUCKET_PARSE_SERVER=${{ vars.STAGE_S3_BUCKET_PARSE_SERVER }}" >> $GITHUB_ENV
+            echo "API_BACKEND_URL=${{ vars.STAGE_API_BACKEND_URL }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_ALLOW_ORIGIN=${{ secrets.STAGE_PARSE_SERVER_ALLOW_ORIGIN }}" >> $GITHUB_ENV
+          else
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.DEV_AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+            echo "${{ secrets.DEV_AWS_EC2_SSH_KEY }}" >> key.pem
+            echo "AWS_REGION=${{ vars.DEV_AWS_REGION }}" >> $GITHUB_ENV
+            echo "AWS_ECR_REPO_PARSE_SERVER=${{ vars.DEV_AWS_ECR_REPO_PARSE_SERVER }}" >> $GITHUB_ENV
+            echo "AWS_EC2_HOST=${{ vars.DEV_AWS_EC2_HOST }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_APPLICATION_ID=${{ secrets.DEV_PARSE_SERVER_APPLICATION_ID }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_MASTER_KEY=${{ secrets.DEV_PARSE_SERVER_MASTER_KEY }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_JAVASCRIPT_KEY=${{ secrets.DEV_PARSE_SERVER_JAVASCRIPT_KEY }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_DATABASE_URI=${{ secrets.DEV_PARSE_SERVER_DATABASE_URI }}" >> $GITHUB_ENV
+            echo "S3_BUCKET_PARSE_SERVER=${{ vars.DEV_S3_BUCKET_PARSE_SERVER }}" >> $GITHUB_ENV
+            echo "API_BACKEND_URL=${{ vars.DEV_API_BACKEND_URL }}" >> $GITHUB_ENV
+            echo "PARSE_SERVER_ALLOW_ORIGIN=${{ secrets.DEV_PARSE_SERVER_ALLOW_ORIGIN }}" >> $GITHUB_ENV
+          fi
